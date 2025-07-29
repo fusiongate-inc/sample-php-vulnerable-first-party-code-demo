@@ -5,28 +5,34 @@ use CodeIgniter\CLI\CLI;
 // The main Exception
 CLI::write('[' . $exception::class . ']', 'light_gray', 'red');
 CLI::write($message);
-CLI::write('at ' . CLI::color(clean_path($exception->getFile()) . ':' . $exception->getLine(), 'green'));
+$file = $exception->getFile();
+$line = $exception->getLine();
+CLI::write('at ' . CLI::color(clean_path($file) . ':' . $line, 'green'));
 CLI::newLine();
 
 $last = $exception;
+$backtraces = $last->getTrace();
 
 while ($prevException = $last->getPrevious()) {
     $last = $prevException;
+    $backtraces = array_merge($backtraces, $prevException->getTrace());
 
     CLI::write('  Caused by:');
     CLI::write('  [' . $prevException::class . ']', 'red');
     CLI::write('  ' . $prevException->getMessage());
-    CLI::write('  at ' . CLI::color(clean_path($prevException->getFile()) . ':' . $prevException->getLine(), 'green'));
+    $file = $prevException->getFile();
+    $line = $prevException->getLine();
+    CLI::write('  at ' . CLI::color(clean_path($file) . ':' . $line, 'green'));
     CLI::newLine();
 }
 
 // The backtrace
 if (defined('SHOW_DEBUG_BACKTRACE') && SHOW_DEBUG_BACKTRACE) {
-    $backtraces = $last->getTrace();
-
     if ($backtraces) {
         CLI::write('Backtrace:', 'green');
     }
+
+    $cachedCleanPath = [];
 
     foreach ($backtraces as $i => $error) {
         $padFile  = '    '; // 4 spaces
@@ -34,9 +40,9 @@ if (defined('SHOW_DEBUG_BACKTRACE') && SHOW_DEBUG_BACKTRACE) {
         $c        = str_pad($i + 1, 3, ' ', STR_PAD_LEFT);
 
         if (isset($error['file'])) {
-            $filepath = clean_path($error['file']) . ':' . $error['line'];
-
-            CLI::write($c . $padFile . CLI::color($filepath, 'yellow'));
+            $filepath = $error['file'] . ':' . $error['line'];
+            $cleanPath = $cachedCleanPath[$filepath] ?? ($cachedCleanPath[$filepath] = clean_path($filepath));
+            CLI::write($c . $padFile . CLI::color($cleanPath, 'yellow'));
         } else {
             CLI::write($c . $padFile . CLI::color('[internal function]', 'yellow'));
         }
@@ -50,11 +56,16 @@ if (defined('SHOW_DEBUG_BACKTRACE') && SHOW_DEBUG_BACKTRACE) {
             $function .= $padClass . $error['function'];
         }
 
-        $args = implode(', ', array_map(static fn ($value): string => match (true) {
-            is_object($value) => 'Object(' . $value::class . ')',
-            is_array($value)  => $value !== [] ? '[...]' : '[]',
-            $value === null   => 'null', // return the lowercased version
-            default           => var_export($value, true),
+        $args = implode(', ', array_map(static function ($value) {
+            if (is_object($value)) {
+                return 'Object(' . $value::class . ')';
+            } elseif (is_array($value)) {
+                return $value !== [] ? '[...]' : '[]';
+            } elseif ($value === null) {
+                return 'null';
+            } else {
+                return var_export($value, true);
+            }
         }, array_values($error['args'] ?? [])));
 
         $function .= '(' . $args . ')';
