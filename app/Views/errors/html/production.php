@@ -7,7 +7,17 @@
     <title><?= lang('Errors.whoops') ?></title>
 
     <style>
-        <?= preg_replace('#[\r\n\t ]+#', ' ', file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'debug.css')) ?>
+        <?php
+        $cssFilePath = __DIR__ . DIRECTORY_SEPARATOR . 'debug.css';
+        if (file_exists($cssFilePath)) {
+            $cssContent = file_get_contents($cssFilePath);
+            $minifiedCssContent = preg_replace('#[\r\n\t ]+#', ' ', $cssContent);
+            echo $minifiedCssContent;
+        } else {
+            // Handle the case when the CSS file is missing
+            echo '/* CSS file not found */';
+        }
+        ?>
     </style>
 </head>
 <body>
@@ -21,5 +31,4 @@
     </div>
 
 </body>
-
 </html>

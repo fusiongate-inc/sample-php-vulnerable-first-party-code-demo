@@ -1,5 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
+namespace App;
+
 /**
  * The goal of this file is to allow developers a location
  * where they can overwrite core procedural functions and
@@ -9,7 +13,7 @@
  *
  * This can be looked at as a `master helper` file that is
  * loaded early on, and may also contain additional functions
- * that you'd like to use throughout your entire application
+ * that you'd like to use throughout your entire application.
  *
- * @see: https://codeigniter.com/user_guide/extending/common.html
+ * @see https://codeigniter.com/user_guide/extending/common.html
  */

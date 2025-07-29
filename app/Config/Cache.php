@@ -55,7 +55,7 @@ class Cache extends BaseConfig
      * hard-coded, but may be useful to projects and modules. This will replace
      * the hard-coded value in a future release.
      */
-    public int $ttl = 60;
+    public int $ttl = 3600; // Changed from 60 to 3600 (1 hour)
 
     /**
      * --------------------------------------------------------------------------

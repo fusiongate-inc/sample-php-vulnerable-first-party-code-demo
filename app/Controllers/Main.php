@@ -8,7 +8,7 @@ class Main extends Controller
 {
     public function input()
     {
-        $text = $this->request->getGet('text');
+        $text = htmlspecialchars($this->request->getGet('text'), ENT_QUOTES, 'UTF-8');
         return view('input', ['text' => $text]);
     }
 
@@ -16,8 +16,8 @@ class Main extends Controller
     {
         if ($this->request->getMethod() === 'post') {
             $data = [
-                'item' => $this->request->getPost('item'),
-                'amount' => $this->request->getPost('amount'),
+                'item' => htmlspecialchars($this->request->getPost('item'), ENT_QUOTES, 'UTF-8'),
+                'amount' => htmlspecialchars($this->request->getPost('amount'), ENT_QUOTES, 'UTF-8'),
                 'submitted' => true,
             ];
             return view('checkout', $data);
@@ -25,4 +25,3 @@ class Main extends Controller
         return view('checkout', ['submitted' => false]);
     }
 }
-
