@@ -39,6 +39,7 @@ class Autoload extends AutoloadConfig
      */
     public $psr4 = [
         APP_NAMESPACE => APPPATH,
+        // Add your custom namespaces here
     ];
 
     /**
@@ -58,7 +59,9 @@ class Autoload extends AutoloadConfig
      *
      * @var array<string, string>
      */
-    public $classmap = [];
+    public $classmap = [
+        // Add your class mappings here
+    ];
 
     /**
      * -------------------------------------------------------------------
