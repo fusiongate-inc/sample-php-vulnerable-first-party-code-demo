@@ -69,16 +69,24 @@
     </style>
 </head>
 <body>
-    <div class="wrap">
-        <h1>404</h1>
+    <header>
+        <div class="logo"></div>
+    </header>
+    <main>
+        <div class="wrap">
+            <h1>404</h1>
 
-        <p>
-            <?php if (ENVIRONMENT !== 'production') : ?>
-                <?= nl2br(esc($message)) ?>
-            <?php else : ?>
-                <?= lang('Errors.sorryCannotFind') ?>
-            <?php endif; ?>
-        </p>
-    </div>
+            <p>
+                <?php if (ENVIRONMENT !== 'production') : ?>
+                    <?= nl2br(esc($message)) ?>
+                <?php else : ?>
+                    <?= lang('Errors.sorryCannotFind') ?>
+                <?php endif; ?>
+            </p>
+        </div>
+    </main>
+    <footer class="footer">
+        <!-- Footer content goes here -->
+    </footer>
 </body>
 </html>
