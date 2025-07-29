@@ -83,7 +83,15 @@ class preload
      */
     public function load(): void
     {
+        if (!is_array($this->paths) || empty($this->paths)) {
+            return;
+        }
+
         foreach ($this->paths as $path) {
+            if (!isset($path['include']) || !is_string($path['include']) || !is_dir($path['include'])) {
+                continue;
+            }
+
             $directory = new RecursiveDirectoryIterator($path['include']);
             $fullTree  = new RecursiveIteratorIterator($directory);
             $phpFiles  = new RegexIterator(
@@ -92,15 +100,19 @@ class preload
                 RecursiveRegexIterator::GET_MATCH,
             );
 
+            $excludePaths = isset($path['exclude']) && is_array($path['exclude']) ? $path['exclude'] : [];
+
             foreach ($phpFiles as $key => $file) {
-                foreach ($path['exclude'] as $exclude) {
-                    if (str_contains($file[0], $exclude)) {
+                $filePath = $file[0];
+
+                foreach ($excludePaths as $exclude) {
+                    if (strpos($filePath, $exclude) !== false) {
                         continue 2;
                     }
                 }
 
-                require_once $file[0];
-                echo 'Loaded: ' . $file[0] . "\n";
+                require $filePath;
+                echo 'Loaded: ' . $filePath . "\n";
             }
         }
     }
