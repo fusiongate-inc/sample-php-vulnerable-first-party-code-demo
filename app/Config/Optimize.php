@@ -3,27 +3,26 @@
 namespace Config;
 
 /**
- * Optimization Configuration.
+ * Optimization Configuration class.
  *
- * NOTE: This class does not extend BaseConfig for performance reasons.
- *       So you cannot replace the property values with Environment Variables.
+ * This class holds configuration settings related to performance optimization.
+ * It does not extend BaseConfig for performance reasons, so property values
+ * cannot be replaced with Environment Variables.
  */
-class Optimize
+class OptimizationConfig
 {
     /**
-     * --------------------------------------------------------------------------
-     * Config Caching
-     * --------------------------------------------------------------------------
+     * Determines whether config caching is enabled.
      *
+     * @var bool
      * @see https://codeigniter.com/user_guide/concepts/factories.html#config-caching
      */
     public bool $configCacheEnabled = false;
 
     /**
-     * --------------------------------------------------------------------------
-     * Config Caching
-     * --------------------------------------------------------------------------
+     * Determines whether file locator caching is enabled.
      *
+     * @var bool
      * @see https://codeigniter.com/user_guide/concepts/autoloader.html#file-locator-caching
      */
     public bool $locatorCacheEnabled = false;
